@@ -1,0 +1,71 @@
+.editor{
+  @include less-usable-flex;
+    &__name{
+      font-size: 26.5px;
+      color: #635c73;
+      text-align: center;
+      @include fonts-one;
+      font-weight: 800;
+      padding-top: 72px;
+    }
+    &__text{
+      @include fonts-two;
+      font-size: 14px;
+      color: #635c73;
+      text-align: center;
+      padding-top: 23px;
+      padding-bottom: 34px;
+    }
+    &__github-link{
+      @include fonts-one;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 700;
+      color: #333;
+      padding: 6px 10px;
+      border: 1px solid #d6d6d6;
+      background: #f3f3f3;
+      border-right: 0;
+      border-radius: 2px;
+      &_vam{
+        vertical-align: middle;
+      }
+    }
+    &__github-link_text{
+      margin-left: 6px;
+    }
+    &__github-link_count{
+      @include fonts-one;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 8px 10px;
+      border: 1px solid #d6d6d6;
+      border-radius: 2px;
+      margin-right: 9px;
+      color: #333;
+      margin-left: -1px;
+    }
+    &__github-links-container{
+      margin-bottom: 20px;
+      display: flex;
+      flex-wrap: nowrap;
+    }
+    &__section{
+      margin-bottom: 88px;
+    }
+}
+
+  @media screen and (min-width: 481px) {
+    .editor__text {
+      font-size: 21px;
+    }
+  }
+  @media screen and (min-width: 993px) {
+    .editor__name {
+      font-size: 54px;
+    }
+    .editor__text {
+      font-size: 16px;
+    }
+  }

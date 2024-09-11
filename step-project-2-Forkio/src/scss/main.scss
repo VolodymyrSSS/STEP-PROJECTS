@@ -1,0 +1,13 @@
+@import 'reset';
+@import 'variables';
+@import 'partials/mixins';
+@import 'base';
+
+
+@import 'sections/header';
+@import 'sections/app';
+@import 'sections/editor';
+@import 'sections/services';
+
+@import 'sections/testmonials';
+@import 'sections/pricing';

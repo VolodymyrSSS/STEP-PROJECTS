@@ -1,0 +1,84 @@
+.app{
+  background-image: url("../img/bg-app.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+  position: relative;
+  padding-top: 43px;
+  margin-bottom: 75px;
+  height: 90vh;
+
+
+  &__flex-column{
+    @include column-usable-flex;
+  }
+
+  &__title{
+    font-family: $font-one;
+    color: #fff;
+    font-size: 48px;
+    font-weight: 700;
+    line-height: 20px;
+    margin: 43px 0 20px;
+  }
+
+  &__slogan{
+    font-family: $font-one;
+    font-size: 18px;
+    font-weight: 400;
+    color: #8d81ac;
+    line-height: 34px;
+    text-align: center;
+  }
+
+  &__description{
+    font-family: $font-one;
+    font-size: 14px;
+    font-weight: 400;
+    color: #848e97;
+    padding-bottom: 401px;
+    text-transform: uppercase;
+    margin-top: 20px;
+  }
+
+  &-downblock{
+    @include column-usable-flex; 
+    margin-bottom: 13px;
+    position: absolute;
+    bottom: -65px;
+
+    &_btn{
+      font-size: 18px;
+      font-family: $font-one;
+      background-color: #8d81ac;
+      padding: 15px 31px;
+      border: 1px solid transparent;
+    }
+
+    &_btn:hover{
+      color: #8d81ac;
+      background-color:#fff;
+    }
+
+    &__app-text{
+      font-family: $font-one;
+      font-size: 14px;
+      font-weight: 400;
+      color: #848e97;
+      margin-top: 15px;
+    }
+  }
+}
+
+@media screen and (min-width: 481px) {
+
+  .less-usable-flex{
+    &__title{
+      font-size: 72px;
+    }
+
+    &__slogan{
+      font-size: 24px;
+    }
+  }
+}

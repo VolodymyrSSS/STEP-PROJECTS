@@ -1,0 +1,138 @@
+.pricing {
+  background: #4a384d;
+  text-align: center;
+  padding-bottom: 97px;
+  margin: -11px auto;
+  
+  &__title {
+    font-size: 28px;
+    font-family: $font-one;
+    font-weight: 700;
+    color: #fff;
+    padding: 50px 0;
+  }
+
+  &-tariffs{
+    align-items: baseline;
+  
+    &-item{
+      width: 90%;
+      padding-bottom: 15px;
+      margin: 0 auto;
+
+      &__category{
+        font-size: 24px;
+        font-family: $font-one;
+        color: #fff;
+        text-transform: uppercase;
+        background: rgba(255, 255, 255, 0.15);
+        padding: 46px 0 34px;
+        &_active{
+          background: #392a3a;
+        }
+      }
+
+      &-content{
+        @include column-usable-flex;
+        align-items: center;
+        background: #5d4d60;
+        &_active{
+          background: #403042;
+        }
+
+        &__price{
+          font-size: 60px;
+          font-family: $font-one;
+          font-weight: 400;
+          color: #fff;
+          padding: 32px 0 24px;
+        }
+
+        &__period {
+          position: relative;
+          font-size: 14px;
+          font-family: $font-one;
+          color: #8e8290;
+          text-transform: uppercase;
+          padding-bottom: 40px;
+        }
+
+        &__short-line{
+          width: 60px;
+          height: 5px;
+          background: #8d81ac;
+          
+          margin-bottom: 31px;
+        }
+
+        &__description{
+          font-size: 16px;
+          font-family: $font-one;
+          color: #fff;
+          line-height: 28px;
+          margin-bottom: 37px;
+          &_active{
+            margin-bottom: 92px;
+          }
+        }
+        &_pb{
+          padding-bottom: 28px;
+        }
+
+        &_btn{
+          background: rgba(255, 255, 255, 0.15);
+          text-transform: uppercase;
+          border: 0;
+          padding: 15px 37px;
+          margin-bottom: 38px;
+        }
+
+        &_btn:hover{
+          background: rgba(255, 255, 255, 0.7);
+          color: #7f6d78;
+        }
+      }
+    }
+  }      
+}
+  
+  
+@media screen and (min-width: 481px) {
+  .pricing {
+
+    &__title {
+      font-size: 42px;
+    }
+
+    &-tariffs{
+      @include raw-usable-flex;
+      justify-content: center;
+      
+
+      &-item{
+        width: 35%;
+        margin: 0 auto 30px;
+      }
+    }
+  }
+}
+  
+
+@media screen and (min-width: 993px) {
+  .pricing {
+    
+    &__title {
+      font-size: 48px;
+    }
+
+    &-tariffs{
+      align-items: center;
+
+      &-item{
+        width: 23%;
+        align-content: center;
+        margin: 0 auto 30px;
+      }
+    }
+  }
+}

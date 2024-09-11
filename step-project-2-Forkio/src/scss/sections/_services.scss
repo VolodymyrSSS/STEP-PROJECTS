@@ -1,0 +1,121 @@
+.services{
+  background-color: #f4f4f4;  
+    
+    &__title{
+      font-size: 31px;
+      color: #8d81ac;
+      font-weight: 700;
+      text-align: center;
+      padding-top: 43px;
+      @include fonts-one;
+    }
+    
+    &__list{
+      display: flex;
+      flex-direction: column;
+    }
+    &__item{
+      text-align: center;
+    }
+    &__item-body{
+      position: relative;
+      width: 100%;
+    }
+
+    &__item-name{
+      @include fonts-one;
+      color: #323232;
+      font-size: 16px;
+      text-align: center;
+      padding-top: 22px;
+    }
+    &__item-text {
+      @include fonts-one;
+      color: #848e97;
+      font-size: 14px;
+      line-height: 15px;
+      padding-top: 16px;
+    }
+    &__img{
+      &-search {
+        height: 64px;
+        padding-left: 26px;
+        padding-right: 24px;
+        padding-top: 34px;
+      }
+      &-timer {
+        height: 80px;
+        padding-left: 27px;
+        padding-right: 44px;
+        padding-top: 37px;
+      }
+      &-colb {
+        height: 84px;
+        padding-left: 42px;
+        padding-right: 59px;
+        padding-top: 37px;
+      }
+      &-circle {
+        height: 71px;
+        padding-left: 32px;
+        padding-right: 57px;
+        padding-top: 43px;
+      }
+    }
+    &__photo{
+    padding-bottom: 390px;
+    position: relative;
+    right: -10px;
+    }      
+  }
+  
+
+  @media screen and (min-width: 481px) {
+    .services__title {
+      padding-bottom: 20px;  
+    }
+  
+  @media screen and (min-width: 993px) {
+    .services {
+      &_subwrapper{
+        position:relative;
+        overflow: hidden;
+      }
+    
+      &__title {
+        position: absolute;
+        right: 139px;
+        font-size: 44px;
+        padding-top: 80px;
+        padding-bottom: 40px;
+      }
+      &__item-body{
+        padding-top: 40px;
+      }
+      &__list {
+        width: 40%;
+        padding-top: 25px;
+        padding-bottom: 30px;
+      }
+      &__item{
+        display: flex;
+      }
+      &__item-text {
+        padding-top: 16px;
+      }
+      &__item-name {
+        padding-top: 17px;
+      }
+      &__photo{
+        position: absolute;
+        right: -190px;
+        top: 165px;
+        
+        &_bgc{
+          background-position: 126px -20px;
+          height: 455px;
+        }
+      }
+    }
+  }
+}

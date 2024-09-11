@@ -1,0 +1,131 @@
+.testmonials{
+    background-image: url("../img/bg-testmonials.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: bottom center;
+    text-align: center;
+    padding-top: 30px;
+    padding-bottom: 42px;
+
+    &__column{
+        @include column-usable-flex;
+        justify-content: center;
+
+        &-title{
+            font-family: $font-one;
+            font-size: 36px;
+            font-weight: 700;
+            color: #ffffff;
+            padding: 50px 0;
+        }
+
+        &-items{
+            width: 100%;
+            @include raw-usable-flex;
+            justify-content: center;
+            // padding: 30px;
+        }
+
+        &-text {
+            display: none;
+        }
+
+        &-line{
+            width: 90%;
+            height: 2px;
+            background-color: #645766;
+            margin: 0 auto;
+        }
+    }
+    &__item {
+        margin-bottom: 35px;
+
+        &_description{
+            font-family: $font-two;
+            font-size: 16px;
+            font-weight: 700;
+            font-style: italic;
+            color: #fff;
+            line-height: 24px;
+            margin: 20px;
+        }
+    }
+}
+
+
+@media screen and (min-width: 481px) {
+
+    .testmonials{
+
+        &__column{
+            @include raw-usable-flex;
+            justify-content: center;
+
+            &-title{
+                font-size: 42px;
+                padding: 80px 0;
+            }
+            &-items{
+                align-items: baseline;
+            }
+            &-text {
+                display: block;
+                width: 85%;
+                font-family: $font-two;
+                font-weight: 400;
+                font-size: 14px;
+                line-height: 21px;
+                color: #a291a5;
+            }
+            &-line{
+                width: 85%;
+                margin-top: 16px;
+            }
+        }
+
+        &__item {
+            width: 49%;
+            @include column-usable-flex;
+            justify-content: center;
+            margin-top: 52px;
+            
+            &_description{
+                margin: 25px;
+            }
+        }
+    }
+}
+
+
+@media screen and (min-width: 993px) {
+
+    .testmonials{
+        padding: 46px 0;
+
+        &__column{
+            &-title{
+                font-size: 48px;
+                padding: 95px 0 30px;
+            }
+            &-items{
+                padding-bottom: 84px;
+            }
+            &-text {
+                width: 75%;
+            }
+            &-line{
+                width: 70%;
+                margin-top: 10px;
+            }
+        }
+        &__item {
+            width: 32%;
+            margin-top: 40px;
+            
+            &_description{
+                margin: 30px;
+            }
+        }
+    }
+}
+

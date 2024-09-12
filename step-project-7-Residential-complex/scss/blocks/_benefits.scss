@@ -1,0 +1,53 @@
+.benefits {
+	overflow: hidden;
+	position: relative;
+	padding: 120px 0;
+
+	&::after {
+		content: 'II';
+
+		left: calc(50% + 555px);
+		transform: translate(-50%, 0%);
+		@include watermarks;
+	}
+
+	@include mediaTablet {
+		padding: 5px 0 60px;
+	}
+}
+
+.benefits__row {
+	display: flex;
+	column-gap: 70px;
+
+	@include mediaTablet {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+		gap: 40px 30px;
+	}
+}
+
+.benefits__item {
+	text-align: center;
+}
+
+.benefits__item-img {
+	margin-bottom: 53px;
+
+	@include mediaTablet {
+		width: 50px;
+		height: 50px;
+		margin-bottom: 20px;
+	}
+}
+
+.benefits__item-text {
+	font-size: 20px;
+	line-height: 1.35;
+	font-family: $font-secondary;
+	font-weight: 300;
+
+	@include mediaTablet {
+		font-size: 14px;
+	}
+}

@@ -1,0 +1,63 @@
+.course-card {
+  width: 90%;
+  border: 2px solid green;
+  margin: 1rem auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.course-card p {
+  font-size: 0.85rem;
+  padding-bottom: 0.4rem;
+}
+
+.course-description,
+.course-details {
+  display: flex;
+  flex-direction: column;
+  margin: 0.5rem;
+}
+
+.course-description {
+  width: 60%;
+  align-content: flex-start;
+}
+
+/* .long-string-names {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+} */
+
+.course-description h2 {
+  padding-bottom: 1.2rem;
+}
+
+.course-details {
+  width: 40%;
+  align-content: center;
+}
+
+/*
+if all authors' names do not fit on one line - 
+extra text should be cut off and '...' should be added at the end
+*/
+.long-string-names {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+span {
+  font-size: medium;
+  font-weight: bolder;
+}
+
+.btn-row {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+}

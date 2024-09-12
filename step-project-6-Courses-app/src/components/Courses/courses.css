@@ -1,0 +1,15 @@
+.courses {
+  width: 100%;
+  height: auto;
+  margin-top: 1rem;
+  background-color: #f1f5f8;
+  border: 5px solid #5f9ec5;
+}
+
+.courses-head {
+  width: 90%;
+  margin: 1.5rem auto 2.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

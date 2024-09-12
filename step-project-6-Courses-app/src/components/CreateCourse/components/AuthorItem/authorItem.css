@@ -1,0 +1,25 @@
+.author-item-container {
+  width: 50%;
+  margin: 1rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.authors-titles,
+.course-authors-titles {
+  margin: 1rem;
+  text-align: center;
+}
+
+.authors-list,
+.course-authors-list {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.authors-existed,
+.course-authors-existed {
+  font-size: 18px;
+}

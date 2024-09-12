@@ -1,0 +1,78 @@
+.course-info {
+  width: 100%;
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: #f1f5f8;
+  border: 2px solid #5f9ec5;
+}
+
+.course-info-header {
+  display: flex;
+  flex-direction: column;
+}
+
+.linking-toCourses {
+  font-size: 18px;
+  font-weight: 600;
+  color: #5ec2e0;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.course-info-main {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: stretch;
+}
+
+.description,
+.complementary-courseInfo {
+  text-align: left;
+  padding: 0.2rem;
+  margin: 0.5rem;
+  font-size: 16px;
+}
+
+.description {
+  width: 60%;
+}
+
+.complementary-courseInfo {
+  width: 35%;
+}
+
+.complementary-courseInfo {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  margin-right: 5px;
+}
+
+.complementary-courseInfo-id,
+.complementary-courseInfo-duration,
+.complementary-courseInfo-created {
+  display: flex;
+  margin-bottom: 0.3rem;
+}
+
+h3 {
+  margin-right: 5px;
+}
+
+span {
+  font-size: 15px;
+  align-self: center;
+  margin-right: 5px;
+}
+
+.complementary-courseInfo-authors {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+}
+
+.authors-names {
+  width: 70%;
+  align-self: center;
+}

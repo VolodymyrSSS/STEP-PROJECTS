@@ -1,0 +1,22 @@
+.input-block {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: baseline;
+}
+
+.input-field {
+  width: 35vw;
+  margin-bottom: 0.7rem;
+}
+
+label {
+  margin-bottom: 0.4rem;
+}
+
+input {
+  width: 100%;
+  border: 2px solid #b9821a;
+  padding: 8px 16px;
+  margin-right: 5px;
+}

@@ -1,0 +1,16 @@
+textarea {
+  width: 100%;
+  height: 140px;
+  font-size: 14px;
+  padding: 12px 20px;
+  margin-top: 0.3rem;
+  box-sizing: border-box;
+  border: 2px solid #e0e01d;
+  border-radius: 2px;
+  background-color: #f8f8f8;
+  box-shadow: 1px 1px 1px #a5a514;
+}
+
+.label-textArea {
+  margin-bottom: 0.4rem;
+}

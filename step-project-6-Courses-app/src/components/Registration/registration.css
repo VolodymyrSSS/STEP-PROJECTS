@@ -1,0 +1,33 @@
+.registration-area {
+  width: 100%;
+  height: 90vh;
+  margin-top: 1rem;
+  background-color: #f1f5f8;
+  border: 5px solid #5f9ec5;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.registration-form {
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+form > button {
+  margin-top: 1rem;
+}
+
+span > a {
+  color: #5ec2e0;
+  background-color: transparent;
+  text-decoration: none;
+}
+
+.linking-word {
+  font-size: 18px;
+  font-weight: 600;
+}

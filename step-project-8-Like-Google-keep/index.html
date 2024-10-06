@@ -23,7 +23,7 @@
 				</div>
 				<form class="form p-3 mb-2 bg-body-tertiary" id="addNoteForm">
 					<div class="form__starter shadow p-3 mb-5 bg-body-tertiary rounded">
-						Your notes...
+						Want to add a note?
 					</div>
 
 					<div
@@ -33,42 +33,31 @@
 							class="form__title mb-2 fw-bolder"
 							type="text"
 							placeholder="The note&#39;s title"
+							id="noteTitleInput"
 						/>
-						<div class="form__text fw-normal" contenteditable="true">
-							The text of the note
+						<div class="form__text-wrapper">
+							<div class="form__text-removable fw-normal">
+								The text of the note
+							</div>
+							<div
+								class="form__text fw-normal"
+								contenteditable="true"
+								id="noteTextInput"
+							></div>
 						</div>
 						<button class="btn btn-primary w-100 p-2 mt-4">Add note</button>
 					</div>
-
-					<!-- <div class="input-group mb-3">
-						<input
-							type="text"
-							id="noteText"
-							class="form-control"
-							placeholder="here is your note"
-						/>
-						<button class="btn btn-primary">Add note</button>
-					</div> -->
 				</form>
 			</div>
 		</header>
 
 		<main class="main">
 			<div class="container">
-				<div class="main__cards-wrapper">
-					<!-- тут додаємо html-елементи через JS із готовою розміткою типу:
-					<section class="card">
-						<div class="card-body">
-							<p class="card-text">
-								Some quick example text to build on the card title and make up
-								the bulk of the card's content.
-							</p>
-						</div>
-					</section> -->
-				</div>
+				<div class="main__cards-wrapper"></div>
 			</div>
 		</main>
 
+		<script src="./js/formUi.js"></script>
 		<script src="./js/main.js"></script>
 	</body>
 </html>

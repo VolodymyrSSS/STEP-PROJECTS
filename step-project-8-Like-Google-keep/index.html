@@ -21,13 +21,13 @@
 						Bootstrap 5.3
 					</h1>
 				</div>
-				<form class="form p-3 mb-2 bg-body-tertiary" id="addNoteForm">
-					<div class="form__starter shadow p-3 mb-5 bg-body-tertiary rounded">
+				<form class="form p-3 mb-2 bg-body-tertiary rounded" id="addNoteForm">
+					<div class="form__starter shadow p-3 mb-5 text-bg-warning rounded">
 						Want to add a note?
 					</div>
 
 					<div
-						class="form__content shadow p-3 mb-2 bg-body-tertiary rounded d-none"
+						class="form__content shadow p-3 mb-2 bg-warning-subtle rounded d-none"
 					>
 						<input
 							class="form__title mb-2 fw-bolder"
@@ -45,7 +45,7 @@
 								id="noteTextInput"
 							></div>
 						</div>
-						<button class="btn btn-primary w-100 p-2 mt-4">Add note</button>
+						<button class="btn btn-warning w-100 p-2 mt-4">Add note</button>
 					</div>
 				</form>
 			</div>
@@ -53,7 +53,13 @@
 
 		<main class="main">
 			<div class="container">
-				<div class="main__cards-wrapper"></div>
+				<div class="main__cards-wrapper position-relative">
+					<h2
+						class="no-notes-message h2 text-warning text-center mt-4 mb-4 position-absolute top-50 start-50 translate-middle"
+					>
+						You have no notes!
+					</h2>
+				</div>
 			</div>
 		</main>
 

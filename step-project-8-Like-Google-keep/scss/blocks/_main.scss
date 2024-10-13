@@ -3,3 +3,7 @@
 	gap: 30px;
 	grid-template-columns: repeat(3, 1fr);
 }
+
+.main__cards-wrapper .no-notes-message {
+	display: none;
+}

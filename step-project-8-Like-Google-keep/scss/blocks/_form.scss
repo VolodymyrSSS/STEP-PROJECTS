@@ -12,9 +12,17 @@
 	position: absolute;
 	top: 0;
 	left: 0;
-	color: #cdcdcd;
+	color: #cdcdcd; /* Lighter color to indicate placeholder text */
+	font-style: italic;
 	z-index: 1;
 
 	pointer-events: none;
 	user-select: none; /* щоб виключити будь-яку взаємодію з користувачем */
+}
+
+.form__text {
+	min-height: 50px;
+	padding: 5px;
+	white-space: pre-wrap; /* підтримує пробіли але дозволяє перенос */
+	overflow-wrap: break-word; /* довге слово може бути бути розірване і перенесено*/
 }

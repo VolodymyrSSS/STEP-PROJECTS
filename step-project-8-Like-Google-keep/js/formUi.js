@@ -1,7 +1,41 @@
+import { addNodeForm, formTextRemovable, noteTextInput } from './common.js';
+
 const formStarter = document.querySelector('.form__starter');
 const formContent = document.querySelector('.form__content');
 const formTitle = document.querySelector('.form__title');
 const formText = document.querySelector('.form__text');
+
+// Приховати placeholder коли поле виділено або містить текст - імітац focus()
+noteTextInput.addEventListener('focus', () => {
+	if (noteTextInput.textContent.trim() === '') {
+		formTextRemovable.style.display = 'none';
+	}
+});
+
+// Показати placeholder коли покинули поле - імітація blure()
+noteTextInput.addEventListener('blur', () => {
+	if (noteTextInput.textContent.trim() === '') {
+		formTextRemovable.style.display = 'block';
+	}
+});
+
+// Приховати placeholder коли поле виділено і містить текст
+noteTextInput.addEventListener('input', () => {
+	if (noteTextInput.textContent.trim() !== '') {
+		formTextRemovable.style.display = 'none';
+	} else {
+		formTextRemovable.style.display = 'block';
+	}
+});
+
+// через можливе введення текстів із власними чи зовнішніми стилями, функція уникає накладання таких стилів для HTML-елементу та забезпеч введення простого тексту
+noteTextInput.addEventListener('paste', (e) => {
+	e.preventDefault();
+	const text = e.clipboardData.getData('text/plain');
+	navigator.clipboard.writeText(text).then(() => {
+		document.execCommand('insertText', false, text);
+	});
+});
 
 // показати меню додавання нотатки
 formStarter.onclick = (event) => {

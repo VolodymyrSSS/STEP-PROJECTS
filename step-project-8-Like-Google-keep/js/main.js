@@ -1,15 +1,10 @@
-// шукаємо елементи форми на сторінці
+// шукаємо потрібні елементи на сторінці
+import { createNoteHTML } from './noteStructure.js';
 import { addNodeForm, formTextRemovable, noteTextInput } from './common.js';
 
 const noteTitleInput = document.querySelector('#noteTitleInput');
 const cardsWrapper = document.getElementsByClassName('main__cards-wrapper')[0]; // якщо використовується метод "getElementsByClassName" то повертається масив значень а тому потрібно додавати на той момент єдине значення масиву під індексом "[0]"
 const noNotesMessage = document.getElementsByClassName('no-notes-message')[0];
-
-// Считуєм дані з locale storage при першому запуску
-let notes = [];
-if (localStorage.getItem('notes')) {
-	notes = JSON.parse(localStorage.getItem('notes'));
-}
 
 // створюємо початковий масив нотаток але через "let" бо можемо застосовувати методи які можуть модифікувати оригінальний масив типу: .filter(), .sort() і т.д.
 // let notes = [
@@ -30,6 +25,7 @@ if (localStorage.getItem('notes')) {
 // 	},
 // ];
 
+// визначаємо функцію для відображення повідомлення при відсутності нотаток
 function checkNotesEmpty() {
 	console.log('Running checkNotesEmpty');
 	if (notes.length === 0) {
@@ -39,7 +35,30 @@ function checkNotesEmpty() {
 	}
 }
 
-// Call this function on initial load as well
+// визначаємо функцію для контролю за потенційними помилками при збереженні\обновленні\видаленні нотаток в localStorage
+function saveNotesToLocalStorage(notes) {
+	try {
+		// записуєм зміни (чи додану нотатку) в localStorage
+		localStorage.setItem('notes', JSON.stringify(notes));
+	} catch (err) {
+		console.error('Could not save notes to the localStorage:', err);
+		// тут можна повідомити користувача щодо неможливості зберегти нотатки
+	}
+}
+
+// Считуєм дані з locale storage при першому запуску
+let notes = [];
+// виявлення помилок, які можуть виникнути під час отримання нотаток з localStorage та під час парсінга
+try {
+	const storedNotes = localStorage.getItem('notes');
+	if (storedNotes) {
+		notes = JSON.parse(storedNotes);
+	}
+} catch (err) {
+	console.error('Failed to retrieve or parse notes from localStorage:', err);
+}
+
+// викликаєм цю функцію також при початковому парсінгу
 document.addEventListener('DOMContentLoaded', checkNotesEmpty);
 
 // слухаємо за змінами в формі
@@ -56,8 +75,7 @@ addNodeForm.addEventListener('submit', (event) => {
 		text: noteTextInput.textContent,
 	});
 
-	// записуєм зміни (додану нотатку) в localStorage
-	localStorage.setItem('notes', JSON.stringify(notes));
+	saveNotesToLocalStorage(notes); // збереження\обновлення нотатки в localStorage
 
 	noteTitleInput.value = ''; // очищаэмо поле вводу заголовку нотатки
 	noteTextInput.textContent = ''; // очищаємо поле вводу тексту нотатки
@@ -66,34 +84,18 @@ addNodeForm.addEventListener('submit', (event) => {
 	noteTitleInput.focus(); // повертаєм фокус
 
 	const lastNote = notes[notes.length - 1]; // визначаємо останній доданий елемент масиву
-	// визначаєм як виглядає останній доданий елемент та куда його додавати на сторінку
-	const elem = `<section class="card text-bg-warning mb-3" style="max-width: 18rem;">
-						<div class="card-body">
-							<h5 class="card-title">${lastNote.title}</h5>
-							<p class="card-text">
-								${lastNote.text}
-							</p>
-							<button type="button" class="btn btn-outline-danger btn-sm float-end" data-action="delete" data-id="${lastNote.id}">Delete</button>
-						</div>
-					</section>`;
 
+	// визначаєм останній доданий елемент та місце куда його додавати на сторінку
+	const elem = createNoteHTML(lastNote, lastNote.id);
 	cardsWrapper.insertAdjacentHTML('afterbegin', elem);
+
 	checkNotesEmpty(); // забезпечуєм приховання повідомлення "You have no notes!"
 });
 
-// визначаєм як виглядатимуть нотатки та куда їх додавати на сторінку
 notes.forEach((item, id) => {
-	const elem = `<section class="card text-bg-warning mb-2" style="max-width: 18rem;">
-						<div class="card-body">
-							<h5 class="card-title">${item.title}</h5>
-							<p class="card-text">
-								${item.text}
-							</p>
-							<button type="button" class="btn btn-outline-danger btn-sm float-end" data-action="delete" data-id="${id}">Delete</button>
-						</div>
-					</section>`;
+	const elem = createNoteHTML(item, id); // рендеряться початкові нотатки на сторінці
 
-	cardsWrapper.insertAdjacentHTML('afterbegin', elem);
+	cardsWrapper.insertAdjacentHTML('afterbegin', elem); // куда їх додавати на сторінку
 });
 
 // видалення нотатки зі сторінки
@@ -103,16 +105,18 @@ document.addEventListener('click', (event) => {
 
 		// видаляємо нотатку з масиву по індексу, що не змінює оригінальний масив
 		const deletedItemIndex = notes.findIndex((item) => item.id == id); // нестроге порівняння бо тут "id" може бути текстовим символом а "item.id" є число
-		notes.splice(deletedItemIndex, 1);
+
+		if (deletedItemIndex > -1) {
+			notes.splice(deletedItemIndex, 1); // видаляємо нотатку
+
+			saveNotesToLocalStorage(notes); // записуємо зміни про видалену нотатку в localStorage
+
+			event.target.closest('.card').remove(); // видаляємо нотатку зі сторінки (DOM-дерева)
+
+			checkNotesEmpty(); // забезпечуєм показ повідомлення "You have no notes!"
+		}
 
 		// альтернативне видалення нотаток з масиву через .filter(), але який змінює ориг масив
 		// notes = notes.filter((item) => item.id != id); // нестроге порівняння рядка і числа
-
-		// записуєм зміни (видалену нотатку) в localStorage
-		localStorage.setItem('notes', JSON.stringify(notes));
-
-		event.target.closest('.card').remove(); // видаляємо нотатку зі сторінки (DOM-дерева)
-
-		checkNotesEmpty(); // забезпечуєм показ повідомлення "You have no notes!"
 	}
 });

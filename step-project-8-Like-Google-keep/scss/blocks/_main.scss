@@ -2,8 +2,24 @@
 	display: grid;
 	gap: 30px;
 	grid-template-columns: repeat(3, 1fr);
+	position: relative;
 }
 
 .main__cards-wrapper .no-notes-message {
-	display: none;
+	visibility: hidden; // By default, it is hidden.
+	opacity: 0;
+	transition: visibility 0s linear 300ms, opacity 300ms linear;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 100%; // Set width to accessible values if it's too constricted
+	text-align: center;
+}
+
+// Add a class for visible state
+.main__cards-wrapper .visible {
+	visibility: visible;
+	opacity: 1;
+	transition-delay: 0s; // Apply transition without delay when showing the message
 }

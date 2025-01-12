@@ -1,122 +1,114 @@
 // шукаємо потрібні елементи на сторінці
 import { createNoteHTML } from './noteStructure.js';
-import { addNodeForm, formTextRemovable, noteTextInput } from './common.js';
+import { addNoteForm, formTextRemovable, noteTextInput } from './common.js';
 
-const noteTitleInput = document.querySelector('#noteTitleInput');
-const cardsWrapper = document.getElementsByClassName('main__cards-wrapper')[0]; // якщо використовується метод "getElementsByClassName" то повертається масив значень а тому потрібно додавати на той момент єдине значення масиву під індексом "[0]"
-const noNotesMessage = document.getElementsByClassName('no-notes-message')[0];
+/* весь функціональний код запускається лише після підтвердження повного
+ завантаження DOM за допомогою події DOMContentLoaded. Це гарантує, що всі
+ елементи як от noteTitleInput, cardsWrapper, інші доступні (вже завантажені)
+*/
+document.addEventListener('DOMContentLoaded', () => {
+	const noteTitleInput = document.querySelector('#noteTitleInput');
+	const cardsWrapper = document.querySelector('.main__cards-wrapper');
 
-// створюємо початковий масив нотаток але через "let" бо можемо застосовувати методи які можуть модифікувати оригінальний масив типу: .filter(), .sort() і т.д.
-// let notes = [
-// 	{
-// 		id: 1,
-// 		title: 'Основи JS',
-// 		text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc consectetur hendrerit elementum.',
-// 	},
-// 	{
-// 		id: 2,
-// 		title: 'DOM-дерево',
-// 		text: 'Sed tristique quam sed tempus pretium. Ut et volutpat nisl, vitae suscipit arcu.',
-// 	},
-// 	{
-// 		id: 3,
-// 		title: 'Події в JS',
-// 		text: 'Sed rutrum, orci at luctus varius, lacus turpis porta dui, quis pretium sem odio eget mi. Pellentesque ut faucibus elit.',
-// 	},
-// ];
+	// Отримуєм\считуєм дані з locale storage при першому запуску
+	let notes = JSON.parse(localStorage.getItem('notes')) || [];
 
-// визначаємо функцію для відображення повідомлення при відсутності нотаток
-function checkNotesEmpty() {
-	console.log('Running checkNotesEmpty');
-	if (notes.length === 0) {
-		noNotesMessage.style.display = 'block'; // Повідомлення відображається
-	} else {
-		noNotesMessage.style.display = 'none'; // Повідомлення сховане
-	}
-}
+	/* функція для динамічного створення та відображення чи приховання
+	   блоку з повідомленням "You have no notes!". Тут елемент 
+		 позиціонується абсолютно і доцільніше використовувати
+ 	   visibility: hidden/visible оскільки це не впливатиме на зміщення
+ 	   макета, що є кращим для абсолютно позиціонованих елементів */
+	function checkNotesEmpty() {
+		let noNotesMessage = document.querySelector('.no-notes-message');
 
-// визначаємо функцію для контролю за потенційними помилками при збереженні\обновленні\видаленні нотаток в localStorage
-function saveNotesToLocalStorage(notes) {
-	try {
-		// записуєм зміни (чи додану нотатку) в localStorage
-		localStorage.setItem('notes', JSON.stringify(notes));
-	} catch (err) {
-		console.error('Could not save notes to the localStorage:', err);
-		// тут можна повідомити користувача щодо неможливості зберегти нотатки
-	}
-}
-
-// Считуєм дані з locale storage при першому запуску
-let notes = [];
-// виявлення помилок, які можуть виникнути під час отримання нотаток з localStorage та під час парсінга
-try {
-	const storedNotes = localStorage.getItem('notes');
-	if (storedNotes) {
-		notes = JSON.parse(storedNotes);
-	}
-} catch (err) {
-	console.error('Failed to retrieve or parse notes from localStorage:', err);
-}
-
-// викликаєм цю функцію також при початковому парсінгу
-document.addEventListener('DOMContentLoaded', checkNotesEmpty);
-
-// слухаємо за змінами в формі
-addNodeForm.addEventListener('submit', (event) => {
-	event.preventDefault(); // відміняєм стандартну відправку форми
-
-	// відлік id та поступове додавання його до наступних нотаток
-	let id = notes.length > 0 ? notes[notes.length - 1].id + 1 : 1;
-
-	// додаємо нотатку
-	notes.push({
-		id: id,
-		title: noteTitleInput.value,
-		text: noteTextInput.textContent,
-	});
-
-	saveNotesToLocalStorage(notes); // збереження\обновлення нотатки в localStorage
-
-	noteTitleInput.value = ''; // очищаэмо поле вводу заголовку нотатки
-	noteTextInput.textContent = ''; // очищаємо поле вводу тексту нотатки
-
-	formTextRemovable.textContent = 'The text of the note'; // повертаєм попередній placeholder
-	noteTitleInput.focus(); // повертаєм фокус
-
-	const lastNote = notes[notes.length - 1]; // визначаємо останній доданий елемент масиву
-
-	// визначаєм останній доданий елемент та місце куда його додавати на сторінку
-	const elem = createNoteHTML(lastNote, lastNote.id);
-	cardsWrapper.insertAdjacentHTML('afterbegin', elem);
-
-	checkNotesEmpty(); // забезпечуєм приховання повідомлення "You have no notes!"
-});
-
-notes.forEach((item, id) => {
-	const elem = createNoteHTML(item, id); // рендеряться початкові нотатки на сторінці
-
-	cardsWrapper.insertAdjacentHTML('afterbegin', elem); // куда їх додавати на сторінку
-});
-
-// видалення нотатки зі сторінки
-document.addEventListener('click', (event) => {
-	if (event.target.dataset.action === 'delete') {
-		const id = event.target.dataset.id; // уважно! тут отримаємо рядковий символ а не число
-
-		// видаляємо нотатку з масиву по індексу, що не змінює оригінальний масив
-		const deletedItemIndex = notes.findIndex((item) => item.id == id); // нестроге порівняння бо тут "id" може бути текстовим символом а "item.id" є число
-
-		if (deletedItemIndex > -1) {
-			notes.splice(deletedItemIndex, 1); // видаляємо нотатку
-
-			saveNotesToLocalStorage(notes); // записуємо зміни про видалену нотатку в localStorage
-
-			event.target.closest('.card').remove(); // видаляємо нотатку зі сторінки (DOM-дерева)
-
-			checkNotesEmpty(); // забезпечуєм показ повідомлення "You have no notes!"
+		if (!noNotesMessage) {
+			noNotesMessage = document.createElement('h2');
+			noNotesMessage.className =
+				'no-notes-message h2 text-warning text-center mt-4 mb-4 position-absolute top-50 start-50 translate-middle';
+			noNotesMessage.textContent = 'You have no notes!';
+			cardsWrapper.appendChild(noNotesMessage);
 		}
 
-		// альтернативне видалення нотаток з масиву через .filter(), але який змінює ориг масив
-		// notes = notes.filter((item) => item.id != id); // нестроге порівняння рядка і числа
+		noNotesMessage.style.visibility = notes.length === 0 ? 'visible' : 'hidden';
+		noNotesMessage.style.opacity = notes.length === 0 ? '1' : '0';
 	}
+
+	// записуєм зміни (чи додану нотатку) в localStorage
+	function saveNotesToLocalStorage() {
+		localStorage.setItem('notes', JSON.stringify(notes));
+	}
+
+	// функція відображення\рендеру нотаток на сторінці
+	function renderNotes() {
+		cardsWrapper.innerHTML = ''; // очищаєм поля від попередньої нотатки
+
+		notes.forEach((note) => {
+			const noteHTML = createNoteHTML(note, note.id); //створюєм нову нотатку із своїм id
+			cardsWrapper.insertAdjacentHTML('afterbegin', noteHTML); // куда вставляти на сторінку
+		});
+
+		// перевірка стану на рішення відображення блоку з повідомленням "You have no notes!"
+		checkNotesEmpty();
+	}
+
+	renderNotes(); // викликаємо для відображення масиву нотаток
+
+	/* завжди потрібно перевіряти значення елементу що не є null, бо коли код JS
+	   виконується, існує ймовірність, що елемент HTML ще не доступний в DOM */
+	if (addNoteForm) {
+		// стежимо за змінами в формі
+		addNoteForm.addEventListener('submit', (event) => {
+			event.preventDefault(); // відміняєм стандартну відправку форми
+
+			// визначаємо поля для створення нової нотатки
+			const newNote = {
+				// відлік id та поступове збільшення його для нових нотаток
+				id: notes.length ? Math.max(...notes.map((n) => n.id)) + 1 : 1,
+				// раніше було так
+				// let id = notes.length > 0 ? notes[notes.length - 1].id + 1 : 1;
+				title: noteTitleInput.value,
+				text: noteTextInput.textContent,
+			};
+
+			notes.unshift(newNote); // додаємо на початок новостворену нотатку до масиву нотаток
+
+			saveNotesToLocalStorage(); // збереження новоствореної нотатки в localStorage
+
+			renderNotes(); // перерендер - відображення масиву з новою нотаткою
+
+			noteTitleInput.value = ''; // очищаэмо поле вводу заголовку нотатки від нової
+
+			noteTextInput.textContent = ''; // очищаємо поле вводу тексту нотатки від тексту нової
+
+			formTextRemovable.textContent = 'The text of the note'; // повертаєм попередній placeholder
+
+			noteTitleInput.focus(); // повертаєм фокус
+		});
+	}
+
+	// слідкуєм за видаленням нотатки зі сторінки
+	document.addEventListener('click', (event) => {
+		if (event.target.dataset.action === 'delete') {
+			// видалення нотатки по її id
+			notes = notes.filter(
+				(note) => note.id !== parseInt(event.target.dataset.id, 10) // одразу рядок перетворюєм на число
+			);
+
+			saveNotesToLocalStorage(); // зберігаємо зміни в localStorage
+
+			renderNotes(); // перерендер - відображення масиву без видаленої нотатки
+
+			/* або можна і так:
+ 			 const id = event.target.dataset.id; // уважно! тут отримаємо рядковий символ а не число
+ 			 видаляємо нотатку з масиву по індексу, методом що не змінює оригінальний масив
+
+ 			 const deletedItemIndex = notes.findIndex((item) => item.id == id); - тут нестроге порівняння бо "id" має значенням текстовий символом а "item.id" є число тому так
+
+ 			 if (deletedItemIndex > -1) {
+ 			  notes.splice(deletedItemIndex, 1); // видаляємо нотатку
+ 			  saveNotesToLocalStorage(); // записуємо зміни про видалену нотатку в localStorage
+ 			  renderNotes(); // перерендер карток нотаток після видалення
+ 			 } */
+		}
+	});
 });

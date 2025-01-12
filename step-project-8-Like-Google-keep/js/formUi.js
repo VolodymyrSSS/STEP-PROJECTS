@@ -1,4 +1,4 @@
-import { addNodeForm, formTextRemovable, noteTextInput } from './common.js';
+import { addNoteForm, formTextRemovable, noteTextInput } from './common.js';
 
 const formStarter = document.querySelector('.form__starter');
 const formContent = document.querySelector('.form__content');
@@ -68,7 +68,7 @@ formText.addEventListener('keyup', () => {
 
 // приховати форму, якщо клацнути за межами вмісту форми
 document.addEventListener('click', (event) => {
-	let isClickInsideForm = addNodeForm.contains(event.target);
+	let isClickInsideForm = addNoteForm.contains(event.target);
 
 	// перевірка чи клік не на формі чи будь-якому із її дочірніх елементів
 	if (!isClickInsideForm) {

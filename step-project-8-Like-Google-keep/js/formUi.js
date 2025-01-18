@@ -1,4 +1,12 @@
-import { addNoteForm, formTextRemovable, noteTextInput } from './common.js';
+import {
+	getAddNoteForm,
+	getFormTextRemovable,
+	getNoteTextInput,
+} from './common.js';
+
+const addNoteForm = getAddNoteForm();
+const formTextRemovable = getFormTextRemovable();
+const noteTextInput = getNoteTextInput();
 
 const formStarter = document.querySelector('.form__starter');
 const formContent = document.querySelector('.form__content');

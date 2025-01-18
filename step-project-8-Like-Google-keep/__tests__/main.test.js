@@ -1,7 +1,3 @@
-// імпорт функцій та земульованих даних
-import { saveNotesToLocalStorage, checkNotesEmpty } from '../js/main';
-import initialNotes from '../js/mockingData';
-
 /* 1) Unit tests повинні бути ізольованими. Використання справжнього 
 localStorage означає, що тести можуть впливати один на одного, якщо 
 вони читають/записують ті самі ключі. Це може призвести до нестабільних
@@ -12,15 +8,28 @@ localStorage означає, що тести можуть впливати од�
 повільніше, ніж доступ до простого об’єкта JavaScript. 
 4) Не всі середовища, у яких ви запускаєте свої тести, можуть підтримувати
 роботу з localStorage (наприклад, Node.js), тому використання макету гарантує,
-що ваші тести не залежать від середовища.
+що ваші тести не залежать від середовища. Ось чому потрібно створити фейковий 
+localStorage та інші зовнішні залежності які пов’язані з DOM і середовищем 
+браузера, оскільки Jest, що працює в Node.js не має доступу до середовища 
+браузера за замовчуванням. */
 
-Ось чому потрібно створити фейковий localStorage та інші зовнішні залежності
-як от пов’язані з DOM і середовищем браузера, оскільки Jest не має доступу до
-середовища браузера за замовчанням.
-*/
+// імпорт потрібних функцій та земульованих даних:
+import {
+	saveNotesToLocalStorage,
+	checkNotesEmpty,
+	renderNotes,
+} from '../js/main';
+import initialNotes from '../js/mockingData';
 
-// Створюєм функцію, яка симулює реалізацію роботи localStorage, яка інкапсулює
-// базову функціональність того, що забезпечує справжній localStorage.
+/* Створюєм функцію, яка симулює реалізацію роботи localStorage, яка буде 
+інкапсулює базову функціональність того, що забезпечує справжній localStorage.
+Для цього використаєм можливості Jest. Це в свою чергу забезпечить як кращу 
+інтеграцію з екосистемою Jest так і спрощує налаштування тесту.
+global: це глобальний об’єкт в Node.js. Подібно до об’єкту window в браузері, 
+і означає, що кожна глобальна змінна є властивістю цього об’єкту. Відомо, що 
+localStorage — це вбудований об’єкт, який дозволяє зберігати дані як пари 
+ключ-значення в браузері користувача. Однак, оскільки такий об'єкт не існує в 
+Node.js, його потрібно створити (симулювати) там. Тому робимо так: */
 const localStorageMock = (function () {
 	let store = {};
 	return {
@@ -30,161 +39,143 @@ const localStorageMock = (function () {
 		setItem: function (key, value) {
 			store[key] = value.toString();
 		},
+		removeItem: function (key) {
+			delete store[key];
+		},
 		clear: function () {
 			store = {};
 		},
 	};
 })();
 
-/*global: це глобальний об’єкт в Node.js. Подібно до об’єкту window в браузері, 
-і означає, що кожна глобальна змінна є властивістю цього об’єкту. Відомо, що 
-localStorage — це вбудований об’єкт, який дозволяє зберігати дані як пари ключ-значення
-в браузері користувача. Однак, оскільки такий об'єкт не існує в Node.js, його потрібно створити (симулювати) там. Тому робимо так: */
-global.localStorage = localStorageMock;
+/* Для заміни такої властивості як localStorage об’єкту window у кастомному 
+фейковому об’єкті що створюється, використаєм поширений підхід у середовищах 
+тестування JavaScript, де певні властивості браузера недоступні природним 
+чином (наприклад, у середовищах Node під час використання Jest). Він полягає 
+у використанні методу Object.defineProperty, який визначає нову властивість 
+прямо на об'єкті чи змінює існуючу властивість об'єкту та повертає вже 
+змінений об'єкт.*/
+Object.defineProperty(window, 'localStorage', { value: localStorageMock });
+/*Якщо не використовується strict mode, можна безпосередньо перезаписати 
+властивість об'єкту window як
+			window.localStorage = localStorageMock;
+Однак зауважте, що деякі властивості доступні лише для читання і не можуть 
+бути перезаписані безпосередньо. Тобто цей метод може не спрацювати у разі
+якщо властивість задана як non-configurable.*/
 
-/*Jest працює в середовищі Node.js, яке за замовчуванням не має доступу до об'єктів
-DOM. Під час тестування коду JavaScript, який взаємодіє з DOM, необхідно імітувати
-якусь частину середовища DOM оскільки Jest не працює в середовищі браузера. 
-Доступ до елементів DOM за допомогою методів як document.querySelector, потрібно
-визначити ці елементи у штучній чи зсимульованій структурі DOM. Тому такий рядок як
-document.body.innerHTML визначає зсимульовану структуру HTML у тестовому середовищі.
-При цьому визначається мінімальна частина зсимульованих елементів HTML, з якими буде взаємодіяти JavaScript код. */
-// document.body.innerHTML = `
-//   <form id="addNoteForm"></form>
-//   <div id="noteTitleInput"></div>
-//   <div class="main__cards-wrapper"></div>
-//   <div class="no-notes-message"></div>
-// `;
+/*Jest працює в середовищі Node.js, яке за замовчуванням не має доступу до 
+об'єктів DOM. Під час такого тестування необхідно створити такі об'єкти та
+імітувати роботу JS в середовищі DOM.
+Доступ до елементів DOM будем робити за допомогою методу document.querySelector,
+а методом document.body.innerHTML зімітуємо створення структури HTML у тестовому 
+середовищі Node.js для симуляції роботи JS з об'єктами DOM. При цьому визначається 
+мінімально необхідна частина зсимульованих елементів HTML, з якими буде взаємодія. */
+beforeEach(() => {
+	localStorage.clear(); // Mock clear any stored data to prevent test leakage
 
-/* Ці рядки зберігають посилання на ці зсимульовані елементи DOM у константах.
-Цими константами можна маніпулювати у тестах, щоб імітувати та спостерігати за
-взаємодіями, як вони би відбулися б у справжньому середовищі, що дозволяє проводити
-ретельне тестування функцій, які взаємодіють із цими елементами.*/
-// const noteTitleInput = document.querySelector('#noteTitleInput');
-// const cardsWrapper = document.querySelector('.main__cards-wrapper');
-// const noNotesMessage = document.querySelector('.no-notes-message');
+	// Reset the DOM to the initial required HTML structure:
+	document.body.innerHTML = `
+		<div class="no-notes-message" style="visibility: hidden; opacity: 0;"></div>
+		<div class="main__cards-wrapper"></div>
+		<form id="addNoteForm"></form>
+    <input id="noteTitleInput" type="text" value="Test Title" />
+    <div id="noteTextInput" contenteditable="true">Test text, test text, test text</div>
+    <div id="formTextRemovable"></div>
+    <button id='addNoteBtn'>Add Note</button>
+  `;
 
-/*Ізоляція в тестуванні означає, що результат одного тесту не повинен залежати від
-того, чи виконуються інші тести до чи після нього. Цей принцип допомагає запобігти
-побічним ефектам між тестами та гарантує, що кожен тест можна виконувати в будь-якому порядку, не впливаючи на результати. */
-// function resetMocks() {
-// 	localStorage.clear(); // скидання (очищення) всіх даних з зсимульованого localStorage
-// 	noteTitleInput.value = ''; // скидання поля введення заголовку нотатки до порожнього стану
-// 	cardsWrapper.innerHTML = ''; // скидання внутрішнього контенту (HTML-код картки) обгортки
-// 	noNotesMessage.style.display = ''; // скидання CSSвластивостей елементу no-note пвідомлення
-// }
+	// Globals initialization or tie JS globals and imports to DOM mocks
+	global.cardsWrapper = document.querySelector('.main__cards-wrapper');
+	global.addNoteForm = document.querySelector('#addNoteForm');
+	global.noteTitleInput = document.querySelector('#noteTitleInput');
+	global.noteTextInput = document.querySelector('#noteTextInput');
+	global.formTextRemovable = document.querySelector('#formTextRemovable');
+	global.addNoteButton = document.querySelector('#addNoteBtn');
 
-// describe('Notes Application', () => {
-// 	beforeEach(() => {
-// 		document.body.innerHTML = `
-//       <form id="addNoteForm"></form>
-//       <div id="noteTitleInput"></div>
-//       <div class="main__cards-wrapper"></div>
-//       <div class="no-notes-message"></div>
-//     `;
+	// Reset any imported modules if necessary
+	jest.resetModules();
+});
 
-// 		resetMocks();
+describe('Operations with localStorage', () => {
+	test('no-notes-message should be visible when no notes are present', () => {
+		localStorage.setItem('notes', JSON.stringify([])); // задаєм пустий масив - без нотаток
+		renderNotes(); // ця функція викликає перевірку checkNotesEmpty
+		const noNotesMessage = document.querySelector('.no-notes-message');
 
-// 		localStorage.setItem('notes', JSON.stringify(initialNotes));
-
-// 		notes = JSON.parse(localStorage.getItem('notes'));
-// 	});
-
-// 	test('Loading initial notes from localStorage', () => {
-// 		expect(notes).toEqual(initialNotes);
-// 		expect(notes.length).toBe(3);
-// 	});
-
-// 	test('Adding a new note should increase notes array', () => {
-// 		const newNote = {
-// 			id: 4,
-// 			title: 'Делегування подій при роботі з DOM',
-// 			text: 'Aliquam sollicitudin facilisis risus, vel commodo sem iaculis in. Quisque sodales quis lorem at hendrerit. Donec eleifend consectetur tellus non lacinia.',
-// 		};
-// 		notes.push(newNote);
-// 		saveNotesToLocalStorage(notes);
-// 		expect(JSON.parse(localStorage.getItem('notes')).length).toBe(4);
-// 		expect(notes[3]).toEqual(newNote);
-// 	});
-
-// 	test('Deleting a note should decrease notes array', () => {
-// 		notes.splice(1, 1); // видалення другої нотатки
-// 		saveNotesToLocalStorage(notes);
-// 		expect(JSON.parse(localStorage.getItem('notes')).length).toBe(2);
-// 	});
-
-// 	test('checkNotesEmpty should display message when no notes are present', () => {
-// 		notes = [];
-// 		checkNotesEmpty();
-// 		expect(noNotesMessage.style.display).toBe('block');
-// 	});
-
-// 	test('checkNotesEmpty should not display message when notes are present', () => {
-// 		expect(notes.length).toBeGreaterThan(0);
-// 		checkNotesEmpty();
-// 		expect(noNotesMessage.style.display).toBe('none');
-// 	});
-// });
-
-describe('Notes Application General Tests', () => {
-	beforeEach(() => {
-		document.body.innerHTML = `
-        <form id="addNoteForm"></form>
-        <div id="noteTitleInput"></div>
-        <div class="main__cards-wrapper"></div>
-        <div class="no-notes-message" style="display: none;"></div>
-    `;
-
-		localStorage.clear();
-		localStorage.setItem('notes', JSON.stringify(initialNotes));
-
-		jest.resetModules(); // Ensures that modules are freshly required
-		require('../js/main'); // Import after setting up the DOM
+		expect(noNotesMessage.style.visibility).toBe('visible');
+		expect(noNotesMessage.style.opacity).toBe('1');
 	});
 
-	describe('Notes Application General Tests', () => {
-		beforeEach(() => {
-			document.body.innerHTML = `
-            <form id="addNoteForm"></form>
-            <div id="noteTitleInput"></div>
-            <div class="main__cards-wrapper"></div>
-            <div class="no-notes-message" style="display: none;"></div>
-        `;
+	test('checkNotesEmpty should not display message when notes are present', () => {
+		localStorage.setItem('notes', JSON.stringify(initialNotes)); // задаєм масив з початковими нотатками
+		renderNotes();
+		// Використовуємо затримку для того щоб усі DOM-елементи завантажились
+		setTimeout(() => {
+			const noNotesMessage = document.querySelector('.no-notes-message');
 
-			localStorage.clear();
-			localStorage.setItem('notes', JSON.stringify(initialNotes));
+			expect(noNotesMessage.style.visibility).toBe('hidden');
+		}, 100);
+	});
 
-			jest.resetModules(); // Reset module registry
-			require('../js/main'); // This should now correctly attach the event listener
-		});
+	test('Loading initial notes from localStorage', () => {
+		localStorage.setItem('notes', JSON.stringify(initialNotes));
+		const loadedNotes = JSON.parse(localStorage.getItem('notes'));
 
-		describe('Initial Page State', () => {
-			test('Initial message visibility based on pre-populated notes', () => {
-				checkNotesEmpty();
-				const noNotesMessage = document.querySelector('.no-notes-message');
-				expect(noNotesMessage.style.display).toBe('none');
-			});
+		expect(loadedNotes).toEqual(initialNotes);
+	});
+});
 
-			test('Initial notes loaded into Local Storage', () => {
-				const storedNotes = JSON.parse(localStorage.getItem('notes'));
-				expect(storedNotes).toEqual(initialNotes);
-			});
-		});
+describe('Notes operations', () => {
+	test('adding a new note should increase notes array', () => {
+		localStorage.setItem('notes', JSON.stringify(initialNotes));
+		let notes = JSON.parse(localStorage.getItem('notes'));
 
-		describe('LocalStorage Operations', () => {
-			test('Saving data to localStorage retains data integrity', () => {
-				saveNotesToLocalStorage(initialNotes);
-				expect(JSON.parse(localStorage.getItem('notes'))).toEqual(initialNotes);
-			});
-		});
+		const newNote = {
+			id: notes.length ? Math.max(...notes.map((n) => n.id)) + 1 : 1,
+			title: noteTitleInput.value,
+			text: noteTextInput.textContent,
+		};
 
-		describe('UI Interactions', () => {
-			test('No-notes message correctly toggles on empty notes array', () => {
-				localStorage.setItem('notes', JSON.stringify([]));
-				checkNotesEmpty();
-				const noNotesMessage = document.querySelector('.no-notes-message');
-				expect(noNotesMessage.style.display).toBe('block');
-			});
-		});
+		notes.unshift(newNote);
+		localStorage.setItem('notes', JSON.stringify(notes));
+
+		expect(JSON.parse(localStorage.getItem('notes')).length).toBe(
+			initialNotes.length + 1
+		);
+		expect(JSON.parse(localStorage.getItem('notes'))).toContainEqual(newNote);
+	});
+
+	test('adding a new note should contains entered new title and text', () => {
+		localStorage.setItem('notes', JSON.stringify(initialNotes));
+		addNoteButton.click();
+
+		setTimeout(() => {
+			expect(cardsWrapper.children.length).toBe(1);
+			expect(cardsWrapper.firstChild.innerText).toContain('Test Title');
+			expect(cardsWrapper.firstChild.innerText).toContain(
+				'Test text, test text, test text'
+			);
+		}, 100);
+	});
+
+	test('deleting a note should decrease notes array', () => {
+		localStorage.setItem('notes', JSON.stringify(initialNotes));
+		let notes = JSON.parse(localStorage.getItem('notes'));
+
+		// Переконаємся що як мінімум є дві нотатки щоб видалити якусь з них
+		if (notes.length > 1) {
+			const idToDelete = notes[1].id; // візьмем id другої нотатки
+			const filteredNotes = notes.filter((note) => note.id !== idToDelete);
+
+			localStorage.setItem('notes', JSON.stringify(filteredNotes));
+
+			expect(JSON.parse(localStorage.getItem('notes')).length).toBe(
+				initialNotes.length - 1
+			);
+		} else {
+			throw new Error(
+				'Not enough notes to perform delete operation in test setup.'
+			);
+		}
 	});
 });
